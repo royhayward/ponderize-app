@@ -9,8 +9,17 @@ const api = axios.create({
 });
 
 export const createScripture = async (scripture: Scripture) => {
+  try {
   const response = await api.post('/scriptures', scripture);
   return response.data;
+  } catch (error) {
+    console.error('API Error:', error);
+    if (error.response) {
+      console.error('Response data:', error.response.data);
+      console.error('Response status:', error.response.status);
+    }
+    throw error;
+  }
 };
 
 export const getScripture = async (year: number, week: number) => {

@@ -8,6 +8,12 @@ const port = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
+// Add this before your routes
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`, req.body);
+  next();
+});
+
 // Create scripture
 app.post('/api/scriptures', (req, res) => {
   const scripture = req.body;
@@ -78,6 +84,15 @@ app.get('/api/scriptures/current', (req, res) => {
     }
     res.json(row);
   });
+});
+
+// Add this after your routes
+app.use((err, req, res, next) => {
+  console.error('Server error:', err);
+  res.status(500).json({
+    error: 'Internal server error',
+    details: process.env.NODE_ENV === 'development' ? err.message : undefined
+});
 });
 
 app.listen(port, () => {

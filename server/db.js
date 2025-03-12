@@ -1,12 +1,26 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+const fs = require('fs');
 
-// Open database with write permissions (OPEN_READWRITE | OPEN_CREATE)
-const db = new sqlite3.Database(path.join(__dirname, 'scripture.db'), sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
+// Ensure the directory exists
+const dbDirectory = path.join(__dirname);
+if (!fs.existsSync(dbDirectory)) {
+  fs.mkdirSync(dbDirectory, { recursive: true });
+}
+
+// Set proper permissions for the database file
+const dbPath = path.join(dbDirectory, 'scripture.db');
+const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
   if (err) {
     console.error('Error opening database:', err);
+    // Log more details about the error
+    console.error('Database path:', dbPath);
+    console.error('Current working directory:', process.cwd());
+    console.error('Directory permissions:', fs.statSync(dbDirectory));
   } else {
-    console.log('Connected to SQLite database');
+    // Set file permissions to 666 (rw-rw-rw-)
+    fs.chmodSync(dbPath, 0o666);
+    console.log('Connected to SQLite database at:', dbPath);
   }
 });
 
