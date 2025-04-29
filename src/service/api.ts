@@ -17,10 +17,11 @@ export const createScripture = async (scripture: Scripture) => {
     console.error('API Error:', error);
     
     // Type guard to check if error is an AxiosError
-    if (error instanceof AxiosError) {
-    if (error.response) {
-      console.error('Response data:', error.response.data);
-      console.error('Response status:', error.response.status);
+    if (error instanceof Error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response) {
+        console.error('Response data:', axiosError.response.data);
+        console.error('Response status:', axiosError.response.status);
     }
   }
     

@@ -1,0 +1,11 @@
+
+
+services:
+  scripture-scramble:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ponderize-app
+    ports:
+      - "80:80"
+    restart: unless-stopped
